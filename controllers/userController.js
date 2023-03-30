@@ -2,6 +2,8 @@
 const User = require("../models/userModel")
 const bcrypt = require('bcrypt')
 
+
+require('dotenv').config()
 const accountSid =process.env.ACCOUNTSID
 const authToken = process.env.AUTHTOKEN
 const verifySid = process.env.VERIFYSID
