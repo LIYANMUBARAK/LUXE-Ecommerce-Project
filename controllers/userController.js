@@ -47,9 +47,18 @@ const homeLoad = async (req, res) => {                                          
         const productData = await Product.find({})
         if (req.session.user_id) {
             const userData = await User.findById({ _id: req.session.user_id })
+            if(userData.recentlyViewed){
+         const viewed = userData.recentlyViewed
+                const recentlyViewedProducts = await Product.find({_id:{$in:viewed}})
+            
+            console.log(recentlyViewedProducts)
+                res.render('home', { user: userData, banner: bannerData,product:productData,recentlyViewed:recentlyViewedProducts })
+            }
+            else{
+
             res.render('home', { user: userData, banner: bannerData,product:productData })
         }
-        else {
+         }     else {
             res.render('home', { banner: bannerData,product:productData  })
         }
     }
@@ -322,6 +331,15 @@ const loadProduct = async (req, res) => {                                       
             const id = req.session.user_id
             const userData = await User.findById({ _id: id })
             const productData = await Product.findById({ _id: req.query.id }).populate('category')
+           
+          const recentlyViewedCheck = userData.recentlyViewed.includes(productData._id)
+          if(recentlyViewedCheck)
+          {
+            
+          }
+          else{
+            await User.findOneAndUpdate({_id:req.session.user_id},{$push:{recentlyViewed:productData._id}})
+          }
             const relatedProducts = await Product.find({ category: productData.category._id, is_disabled: false, _id: { $ne: req.query.id } })
             res.render('singleProduct', { product: productData, user: userData, relatedProducts })
         }

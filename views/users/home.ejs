@@ -301,17 +301,30 @@
 			<div class="row">
 				<div class="col-lg-9">
 					<div class="row">
+					
+						<%if(typeof recentlyViewed !=="undefined"){
+						for(let i=0;i<recentlyViewed.length;i++)
+						{
+						%>
 						<div class="col-lg-4 col-md-4 col-sm-6 mb-20">
-							<div class="single-related-product d-flex">
-								<a href="#"><img src="/user/img/r1.jpg" alt=""></a>
-								<div class="desc">
-									<a href="#" class="title">Black lace Heels</a>
-									<div class="price">
-										<h6>$189.00</h6>
-										<h6 class="l-through">$210.00</h6>
+								<div class="single-product d-flex flex-column container">
+									<a href="#"><img src="admin/ProductImages/<%=recentlyViewed[i].image[0]%>" alt=""></a>
+									<div class="desc text-center">
+										<a href="#" class="title">
+											<%= recentlyViewed[i].productName %>
+										</a>
+										<div class="price">
+											<h6>
+												<%= recentlyViewed[i].price %>
+											</h6>
+											<h6 class="l-through">
+												<%= recentlyViewed[i].MRP %>
+											</h6>
+										</div>
 									</div>
 								</div>
 							</div>
+							<%}}%>
 						</div>
 						<div>
 						</div>
