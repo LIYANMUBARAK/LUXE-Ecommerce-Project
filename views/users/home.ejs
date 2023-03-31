@@ -3,8 +3,8 @@
 	<!-- Start Header Area -->
 	<header class="header_area sticky-header">
 		<div class="main_menu">
-			<nav class="navbar navbar-expand-lg navbar-light main_box">
-				<div class="container">
+			<nav class="navbar navbar-expand-lg navbar-light main_box ">
+				<div class="container m-3">
 					<!-- Brand and toggle get grouped for better mobile display -->
 					<a class="navbar-brand logo_h" href="/">
 						<h2>LUXE</h2>
@@ -30,7 +30,7 @@
 										<%= user.name %>
 									</a>
 									<ul class="dropdown-menu">
-										<li class="nav-item">Wallet Balance : $<%= user.wallet %>
+										<li class="nav-item"><a class="nav-link text-dark">Wallet : $ <%= user.wallet %></a>
 										</li>
 										<li class="nav-item"><a class="nav-link" href="/orders">My Orders</a></li>
 										<li class="nav-item"><a class="nav-link" href="/userProfile">User details</a>
@@ -49,13 +49,7 @@
 												style="color: black;" class="ti-bag"></span></a></li>
 									<%}%>
 						</ul>
-						<ul class="nav navbar-nav navbar-right">
-
-							<li class="nav-item"></li>
-							<li class="nav-item">
-								<button class="search"><span class="lnr lnr-magnifier" id="search"></span></button>
-							</li>
-						</ul>
+						
 					</div>
 				</div>
 			</nav>
@@ -161,71 +155,7 @@
 	<!-- end features Area -->
 
 	<!-- Start category Area -->
-	<section class="category-area">
-		<div class="container">
-			<div class="row justify-content-center">
-				<div class="col-lg-8 col-md-12">
-					<div class="row">
-						<div class="col-lg-8 col-md-8">
-							<div class="single-deal">
-								<div class="overlay"></div>
-								<img class="img-fluid w-100" src="/user/img/category/c1.jpg" alt="">
-								<a href="/user/img/category/c1.jpg" class="img-pop-up" target="_blank">
-									<div class="deal-details">
-										<h6 class="deal-title">Sneaker for Sports</h6>
-									</div>
-								</a>
-							</div>
-						</div>
-						<div class="col-lg-4 col-md-4">
-							<div class="single-deal">
-								<div class="overlay"></div>
-								<img class="img-fluid w-100" src="/user/img/category/c2.jpg" alt="">
-								<a href="/user/img/category/c2.jpg" class="img-pop-up" target="_blank">
-									<div class="deal-details">
-										<h6 class="deal-title">Sneaker for Sports</h6>
-									</div>
-								</a>
-							</div>
-						</div>
-						<div class="col-lg-4 col-md-4">
-							<div class="single-deal">
-								<div class="overlay"></div>
-								<img class="img-fluid w-100" src="/user/img/category/c3.jpg" alt="">
-								<a href="/user/img/category/c3.jpg" class="img-pop-up" target="_blank">
-									<div class="deal-details">
-										<h6 class="deal-title">Product for Couple</h6>
-									</div>
-								</a>
-							</div>
-						</div>
-						<div class="col-lg-8 col-md-8">
-							<div class="single-deal">
-								<div class="overlay"></div>
-								<img class="img-fluid w-100" src="/user/img/category/c4.jpg" alt="">
-								<a href="/user/img/category/c4.jpg" class="img-pop-up" target="_blank">
-									<div class="deal-details">
-										<h6 class="deal-title">Sneaker for Sports</h6>
-									</div>
-								</a>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="col-lg-4 col-md-6">
-					<div class="single-deal">
-						<div class="overlay"></div>
-						<img class="img-fluid w-100" src="/user/img/category/c5.jpg" alt="">
-						<a href="/user/img/category/c5.jpg" class="img-pop-up" target="_blank">
-							<div class="deal-details">
-								<h6 class="deal-title">Sneaker for Sports</h6>
-							</div>
-						</a>
-					</div>
-				</div>
-			</div>
-		</div>
-	</section>
+	
 	<!-- End category Area -->
 
 	<!-- start product Area -->
@@ -246,7 +176,7 @@
 					<!-- single product -->
 					<div class="col-lg-3 col-md-6">
 						<div class="single-product">
-							<img class="img-fluid" src="admin/ProductImages/<%=product[i].image[0]%>" alt="">
+							<a  href="/singleProduct?id=<%=product[i]._id%>"><img class="img-fluid" src="admin/ProductImages/<%=product[i].image[0]%>" alt=""></a>
 							<div class="product-details">
 								<h6><%= product[i].productName %></h6>
 								<div class="price">
@@ -286,15 +216,14 @@
 	<!-- End brand Area -->
 
 	<!-- Start related-product Area -->
+	<%if(typeof recentlyViewed !=="undefined"){%>
 	<section class="related-product-area section_gap_bottom">
 		<div class="container">
 			<div class="row justify-content-center">
 				<div class="col-lg-6 text-center">
 					<div class="section-title">
 						<h1>Recently viewed</h1>
-						<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut
-							labore et dolore
-							magna aliqua.</p>
+						<p></p>
 					</div>
 				</div>
 			</div>
@@ -302,13 +231,13 @@
 				<div class="col-lg-9">
 					<div class="row">
 					
-						<%if(typeof recentlyViewed !=="undefined"){
-						for(let i=0;i<recentlyViewed.length;i++)
+						
+						<%for(let i=0;i<recentlyViewed.length;i++)
 						{
 						%>
 						<div class="col-lg-4 col-md-4 col-sm-6 mb-20">
 								<div class="single-product d-flex flex-column container">
-									<a href="#"><img src="admin/ProductImages/<%=recentlyViewed[i].image[0]%>" alt=""></a>
+									<a  href="/singleProduct?id=<%=recentlyViewed[i]._id%>"><img src="admin/ProductImages/<%=recentlyViewed[i].image[0]%>" alt=""></a>
 									<div class="desc text-center">
 										<a href="#" class="title">
 											<%= recentlyViewed[i].productName %>

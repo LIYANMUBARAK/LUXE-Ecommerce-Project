@@ -22,36 +22,40 @@
 
 
 
-
                             <% if (typeof user !=="undefined" ){ %>
 
-                                <li class="nav-item submenu dropdown">
-                                    <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button"
-                                        aria-haspopup="true" aria-expanded="false">
-                                        <%= user.name %>
-                                    </a>
-                                    <ul class="dropdown-menu">
-                                        <li class="nav-item"><a class="nav-link" href="/orders">My Orders</a></li>
-                                        <li class="nav-item"><a class="nav-link" href="/userProfile">User details</a>
-                                        </li>
-                                        <li class="nav-item"><a class="nav-link" href="/logout">LogOut</a></li>
-                                    </ul>
+								<li class="nav-item submenu dropdown">
+									<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button"
+										aria-haspopup="true" aria-expanded="false">
+										<%= user.name %>
+									</a>
+									<ul class="dropdown-menu">
+										<li class="nav-item"><a class="nav-link text-dark">Wallet : $ <%= user.wallet %></a>
+										</li>
+										<li class="nav-item"><a class="nav-link" href="/orders">My Orders</a></li>
+										<li class="nav-item"><a class="nav-link" href="/userProfile">User details</a>
+										</li>
+										<li class="nav-item"><a class="nav-link" href="/logout">LogOut</a></li>
+									</ul>
+								</li>
+								<li class="nav-item "><a class="nav-link" href="/wishlist">Wishlist</a></li>
+								<li class="nav-item" style="margin-top:11.5px;"><a href="/cart" class="cart"><span
+											style="color: black;" class="ti-bag"></span></a></li>
 
-                                </li>
-                                <li class="nav-item "><a class="nav-link" href="/wishlist">Wishlist</a></li>
-                                <% } else{%>
-                                    <li class="nav-item"><a class="nav-link" href="/login">Log In/Sign UP</a></li>
-                                    <%}%>
+								<% } else{%>
 
+									<li class="nav-item"><a class="nav-link" href="/login">Log In/Sign UP</a></li>
+									<li class="nav-item" style="margin-top:11.5px;"><a href="/cart" class="cart"><span
+												style="color: black;" class="ti-bag"></span></a></li>
+									<%}%>
+						</ul>
+						<ul class="nav navbar-nav navbar-right">
 
-
-                        </ul>
-                        <ul class="nav navbar-nav navbar-right">
-                            <li class="nav-item"><a href="/cart" class="cart"><span class="ti-bag"></span></a></li>
-                            <li class="nav-item">
-                                <button class="search"><span class="lnr lnr-magnifier" id="search"></span></button>
-                            </li>
-                        </ul>
+							<li class="nav-item"></li>
+							<li class="nav-item">
+								<button class="search"><span class="lnr lnr-magnifier" id="search"></span></button>
+							</li>
+						</ul>
                     </div>
                 </div>
             </nav>

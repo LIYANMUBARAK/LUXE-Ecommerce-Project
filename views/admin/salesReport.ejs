@@ -62,63 +62,63 @@
         <div class="menu-inner-shadow"></div>
 
         <ul class="menu-inner py-1">
-                     <!-- Dashboard -->
-                     <li class="menu-item ">
-                      <a href="/admin/home" class="menu-link">
-                        <i class='bx bx-home'></i>
-                        <div data-i18n="Analytics">&nbsp Dashboard</div>
-                      </a>
-                    </li>
-                    <!-- User Management -->
-                    <li class="menu-item ">
-                      <a href="/admin/users" class="menu-link">
-                        <i class='bx bx-user' ></i>
-                        <div data-i18n="Analytics">&nbsp User Management</div>
-                      </a>
-                    </li>
-                    <!-- Product Management -->
-                    <li class="menu-item ">
-                      <a href="/admin/products" class="menu-link">
-                        <i class='bx bx-store-alt' ></i>
-                        <div data-i18n="Analytics">&nbsp Product Management</div>
-                      </a>
-                    </li>
-                    <!-- Category Management -->
-                    <li class="menu-item ">
-                      <a href="/admin/categories" class="menu-link">
-                        <i class='bx bx-category' ></i>
-                        <div data-i18n="Analytics">&nbsp Category Management</div>
-                      </a>
-                    </li>
-                    <!-- Order Management -->
-                    <li class="menu-item ">
-                      <a href="/admin/orders" class="menu-link">
-                        <i class='bx bx-package' ></i>
-                        <div data-i18n="Analytics">&nbsp Order Management</div>
-                      </a>
-                    </li>
-                    <!-- Coupon Management -->
-                    <li class="menu-item ">
-                      <a href="/admin/coupons" class="menu-link">
-                        <i class='bx bxs-coupon' ></i>
-                        <div data-i18n="Analytics">&nbsp Coupon Management</div>
-                      </a>
-                    </li>
-                    <!-- Banner Management -->
-                    <li class="menu-item ">
-                      <a href="/admin/banners" class="menu-link">
-                        <i class='bx bx-slideshow' ></i>
-                        <div data-i18n="Analytics">&nbsp Banner Management</div>
-                      </a>
-                    </li>
-          
-                    <!-- Sales Report -->
-                    <li class="menu-item active">
-                      <a href="/admin/salesReport" class="menu-link">
-                        <i class='bx bxs-report' ></i>
-                        <div data-i18n="Analytics">&nbsp Sales Report</div>
-                      </a>
-                    </li>
+          <!-- Dashboard -->
+          <li class="menu-item ">
+            <a href="/admin/home" class="menu-link">
+              <i class='bx bx-home'></i>
+              <div data-i18n="Analytics">&nbsp Dashboard</div>
+            </a>
+          </li>
+          <!-- User Management -->
+          <li class="menu-item ">
+            <a href="/admin/users" class="menu-link">
+              <i class='bx bx-user'></i>
+              <div data-i18n="Analytics">&nbsp User Management</div>
+            </a>
+          </li>
+          <!-- Product Management -->
+          <li class="menu-item ">
+            <a href="/admin/products" class="menu-link">
+              <i class='bx bx-store-alt'></i>
+              <div data-i18n="Analytics">&nbsp Product Management</div>
+            </a>
+          </li>
+          <!-- Category Management -->
+          <li class="menu-item ">
+            <a href="/admin/categories" class="menu-link">
+              <i class='bx bx-category'></i>
+              <div data-i18n="Analytics">&nbsp Category Management</div>
+            </a>
+          </li>
+          <!-- Order Management -->
+          <li class="menu-item ">
+            <a href="/admin/orders" class="menu-link">
+              <i class='bx bx-package'></i>
+              <div data-i18n="Analytics">&nbsp Order Management</div>
+            </a>
+          </li>
+          <!-- Coupon Management -->
+          <li class="menu-item ">
+            <a href="/admin/coupons" class="menu-link">
+              <i class='bx bxs-coupon'></i>
+              <div data-i18n="Analytics">&nbsp Coupon Management</div>
+            </a>
+          </li>
+          <!-- Banner Management -->
+          <li class="menu-item ">
+            <a href="/admin/banners" class="menu-link">
+              <i class='bx bx-slideshow'></i>
+              <div data-i18n="Analytics">&nbsp Banner Management</div>
+            </a>
+          </li>
+
+          <!-- Sales Report -->
+          <li class="menu-item active">
+            <a href="/admin/salesReport" class="menu-link">
+              <i class='bx bxs-report'></i>
+              <div data-i18n="Analytics">&nbsp Sales Report</div>
+            </a>
+          </li>
 
           <!-- Misc -->
 
@@ -192,124 +192,137 @@
 
         <!-- / Navbar -->
         <form method="post">
-        <div class="mb-3 d-flex container  mt-3">
+          <div class="mb-3 container d-flex mt-3">
 
-          <div class="col-md-3">
-            <input  class="form-control" type="date" name="dateFrom" id="dateFrom"/>
-          </div>
-          <h5 class="mt-2">&nbsp To &nbsp</h5>
-          <div class="col-md-3">
-            <input  class="form-control" type="date" name="dateTo" id="dateTo"/>
-           <p style="color:red" id="date"></p>
-            
-          </div>
-          
-     
-          <div class="col-md-3 ms-3">
-         
-          </div>
-        </div>
-        <!-- Content wrapper -->
-        <div class="content-wrapper">
-          <!-- Content -->
+            <div class="col-md-3">
+              <input class="form-control" type="date" name="dateFrom" id="dateFrom" />
+            </div>
+            <h5 class="mt-2">&nbsp To &nbsp</h5>
+            <div class="col-md-3">
+              <input class="form-control" type="date" name="dateTo" id="dateTo" />
+              <p style="color:red" id="date"></p>
 
-          <!--/ Bootstrap Dark Table -->
-       
-          <div class="card container">
-            <h5 class="card-header">Sales Report</h5>
+            </div>
+
+
             <div class="col-md-3 ms-3">
-              <button class="btn btn-success" type="submit">Download</a>
-            </div>
-            <div class="table-responsive text-nowrap">
-              <table class="table " >
-                <thead>
-                  <tr>
-                    <th>No.</th>
-                    <th>Customer Name</th>
-                    <th>Order Date</th>
-                    <th>Products</th>
-                    <th>Total</th>
-                    <th>Payment Mode</th>
 
-                  </tr>
-                </thead>
-                <tbody id="salesTable" class="table-border-bottom-0">
-                  <% for(let i=0;i<sales.length;i++){%>
-                  <tr>
-                  <td><%= i+1 %></td>
-                  <td><%= sales[i].userId.name %></td>
-                  <td><%= salesDate[i] %></td>
-                  <td>
-                  <%sales[i].productData.forEach((value)=>{%>
-                  <%= value.productId.productName%> x <%=value.quantity %><br>
-                  <%})%></td>
-                  <td><%= sales[i].cartTotal %></td>
-                  <td><%= sales[i].paymentMethod %></td>
-                </tr>
-                <%}%>
-                </tbody>
-              </table>
             </div>
           </div>
+          <!-- Content wrapper -->
+          <div class="content-wrapper">
+            <!-- Content -->
+
+            <!--/ Bootstrap Dark Table -->
+
+            <div class="card container">
+              <h5 class="card-header">Sales Report</h5>
+              <div class="col-md-3 ms-3 ">
+                <button class="btn btn-primary" type="submit"><i class='bx bx-printer'></i>Download</button>
+              </div>
+              <div class="table-responsive text-nowrap">
+                <table class="table ">
+                  <thead>
+                    <tr>
+                      <th>No.</th>
+                      <th>Customer Name</th>
+                      <th>Order Date</th>
+                      <th>Products</th>
+                      <th>Total</th>
+                      <th>Payment Mode</th>
+
+                    </tr>
+                  </thead>
+                  <tbody id="salesTable" class="table-border-bottom-0">
+                    <% for(let i=0;i<sales.length;i++){%>
+                      <tr>
+                        <td>
+                          <%= i+1 %>
+                        </td>
+                        <td>
+                          <%= sales[i].userId.name %>
+                        </td>
+                        <td>
+                          <%= salesDate[i] %>
+                        </td>
+                        <td>
+                          <%sales[i].productData.forEach((value)=>{%>
+                            <%= value.productId.productName%> x <%=value.quantity %><br>
+                                <%})%>
+                        </td>
+                        <td>
+                          <%= sales[i].cartTotal %>
+                        </td>
+                        <td>
+                          <%= sales[i].paymentMethod %>
+                        </td>
+                      </tr>
+                      <%}%>
+                  </tbody>
+                </table>
+              </div>
+            </div>
 
 
 
-          <!-- / Layout page -->
-        </div>
+            <!-- / Layout page -->
+          </div>
 
 
       </div>
-    </form>
-    <button class="btn btn-success" onclick="salesSearch()">Search</button>
-      <!-- / Layout wrapper -->
-      <script>
-        function salesSearch(){
-          let dateFrom=document.getElementById('dateFrom').value
-          let dateTo=document.getElementById('dateTo').value
-          const fromDate = new Date(dateTo)
- const toDate = new Date(dateFrom)
- console.log(fromDate)
-          if(toDate<fromDate){
-            document.getElementById('date').innerHTML=""
-          }else{
-            
-            document.getElementById('date').innerHTML="To date must be greater than From date"
-          }
-            $.ajax({
-                type: "POST",
-                url: '/admin/salesSearch',
-                data: {dateFrom:dateFrom,dateTo:dateTo},
-                success: (response) => {
-                   if(response.success)
-                   {
-                    let sales = response.sales
-                    console.log(sales)
-                    $('#salesTable').html('');
-                     sales.forEach((sales,index) => {
-                      const date = new Date(sales.date)
-              const formattedDate = date.toISOString().slice(0, 10);
-              const productDetails = sales.productData.map((product) => {
-                return `${product.productId.productName} x${product.quantity}`
-              }).join('<br>');
-                     
-                    $('#salesTable').append(  
-                      
+      </form>
+
+      <button class="btn btn-success" onclick="salesSearch()">Search</button>
+    </div>
+    <!-- / Layout wrapper -->
+    <script>
+      function salesSearch() {
+        let dateFrom = document.getElementById('dateFrom').value
+        let dateTo = document.getElementById('dateTo').value
+        const fromDate = new Date(dateTo)
+        const toDate = new Date(dateFrom)
+        console.log(fromDate)
+        if (toDate < fromDate) {
+          document.getElementById('date').innerHTML = ""
+        } else {
+
+          document.getElementById('date').innerHTML = "To date must be greater than From date"
+        }
+        $.ajax({
+          type: "POST",
+          url: '/admin/salesSearch',
+          data: { dateFrom: dateFrom, dateTo: dateTo },
+          success: (response) => {
+            if (response.success) {
+              let sales = response.sales
+              console.log(sales)
+              $('#salesTable').html('');
+              sales.forEach((sales, index) => {
+                const date = new Date(sales.date)
+                const formattedDate = date.toISOString().slice(0, 10);
+                const productDetails = sales.productData.map((product) => {
+                  return `${product.productId.productName} x${product.quantity}`
+                }).join('<br>');
+
+                $('#salesTable').append(
+
                   `<tr>
-                  <td>${index+1}</td>
+                  <td>${index + 1}</td>
                   <td>${sales.userId.name}</td>
                   <td>${formattedDate}</td>         
                   <td>${productDetails}</td>
                   <td>${sales.cartTotal}</td>
                   <td>${sales.paymentMethod}</td>
                   <tr>`
-                     
-            )})
-                
-                   }else{
 
-                   }
-                },
-            })
-        }
+                )
+              })
+
+            } else {
+
+            }
+          },
+        })
+      }
     </script>
-      <%- include("../layouts/adminFooter.ejs") %>
+    <%- include("../layouts/adminFooter.ejs") %>
