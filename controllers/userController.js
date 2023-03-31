@@ -44,12 +44,13 @@ const loginLoad = async (req, res) => {                                         
 const homeLoad = async (req, res) => {                                                 //to load home page
     try {
         const bannerData = await Banner.find({})
+        const productData = await Product.find({})
         if (req.session.user_id) {
             const userData = await User.findById({ _id: req.session.user_id })
-            res.render('home', { user: userData, banner: bannerData })
+            res.render('home', { user: userData, banner: bannerData,product:productData })
         }
         else {
-            res.render('home', { banner: bannerData })
+            res.render('home', { banner: bannerData,product:productData  })
         }
     }
     catch (error) {
