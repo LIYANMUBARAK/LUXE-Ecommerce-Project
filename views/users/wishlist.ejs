@@ -88,7 +88,7 @@
                 <div class="table-responsive">
                     <table class="table">
                         <thead>
-                            <% if(productsData.length>0){ productsData.forEach((productsData,index)=>{ %>
+                           
                                 <tr>
                                     <th scope="col">Image</th>
                                     <th scope="col">Product</th>
@@ -99,7 +99,7 @@
                                 </tr>
                         </thead>
                         <tbody>
-
+                            <% if(productsData.length>0){ productsData.forEach((productsData,index)=>{ %>
                             <tr>
                                 <td><img src="/admin/ProductImages/<%=productsData.image[0]%>" width="100px" alt="">
                                 </td>
@@ -120,6 +120,7 @@
                                 <td><a class="genric-btn success"
                                         href="/addToCartWishListItem?id=<%= productsData._id %>">Move To Cart</a></td>
                             </tr>
+                            <%} )%>
                             <tr class="out_button_area">
                                 <td>
 
@@ -144,7 +145,7 @@
                                     </div>
                                 </td>
                             </tr>
-                            <% })}else{%>
+                            <% }else{%>
                                 <div>
                                     <h1 class="text-center">Wishlist is empty</h1>
                                 </div>

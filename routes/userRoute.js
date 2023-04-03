@@ -8,6 +8,7 @@ user_route.use(session({ secret: config.sessionSecret }))
 
 const auth = require("../middleware/auth")
 const userBlock = require("../middleware/userBlock")
+const errorHandler = require("../middleware/errorHandler")
 
 user_route.set('view engine', 'ejs')
 user_route.set('views', './views/users')
@@ -76,5 +77,8 @@ user_route.get('/cancelOrder', userBlock.isBlocked, auth.isLogin, userController
 
 user_route.get('/addToCartWishListItem', userBlock.isBlocked, auth.isLogin, userController.addToCartWishlistItem) //to move a product from wishlist to cart
 user_route.post('/filter', userController.filter)                                                            //to filter products in home page
+
+
+user_route.use(errorHandler.errorHandler)
 
 module.exports = user_route

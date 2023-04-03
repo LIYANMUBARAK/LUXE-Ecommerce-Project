@@ -13,8 +13,8 @@ const Category = require("../models/categoryModel")
 const Product = require("../models/productModel")
 const Cart = require("../models/cartModel")
 const Wishlist = require("../models/wishlistModel")
-const productModel = require("../models/productModel")
-const { findOne } = require("../models/userModel")
+
+
 const Order = require("../models/orderModel")
 const Coupon = require("../models/couponModel")
 const Banner = require("../models/bannerModel")
@@ -32,27 +32,29 @@ const instance = new Razorpay({
     key_secret: process.env.KEY_SECRET,
 });
 
-const loginLoad = async (req, res) => {                                               //to load login page
+const loginLoad = async (req, res,next) => {                                               //to load login page
     try {
         res.render('login')
     }
     catch {
-        console.log(error.message)
+        next(error)
     }
 }
 
-const homeLoad = async (req, res) => {                                                 //to load home page
+const homeLoad = async (req, res,next) => {                                                 //to load home page
     try {
         const bannerData = await Banner.find({})
         const productData = await Product.find({})
+        const productsData = productData.reverse()
         if (req.session.user_id) {
             const userData = await User.findById({ _id: req.session.user_id })
             if(userData.recentlyViewed){
          const viewed = userData.recentlyViewed
                 const recentlyViewedProducts = await Product.find({_id:{$in:viewed}})
+                const recentlyViewed=recentlyViewedProducts.reverse()
             
-            console.log(recentlyViewedProducts)
-                res.render('home', { user: userData, banner: bannerData,product:productData,recentlyViewed:recentlyViewedProducts })
+           
+                res.render('home', { user: userData, banner: bannerData,product:productsData,recentlyViewed})
             }
             else{
 
@@ -63,20 +65,20 @@ const homeLoad = async (req, res) => {                                          
         }
     }
     catch (error) {
-        console.log(error.message)
+       next(error)
     }
 }
 
-const registerLoad = async (req, res) => {                                              //to load register page
+const registerLoad = async (req, res,next) => {                                              //to load register page
     try {
         res.render('registration')
     }
     catch {
-        console.log(error.message)
+        next(error)
     }
 }
 
-const verifyRegister = async (req, res) => {                                                           //new user registration
+const verifyRegister = async (req, res,next) => {                                                           //new user registration
     try {
         const userDatas = await User.findOne({ mobile: req.body.mobile })
         const userDatasEmail = await User.findOne({ email: req.body.email })
@@ -135,11 +137,11 @@ const verifyRegister = async (req, res) => {                                    
             res.render('registration', { errMessage: "Add special characters to password" })
         }
     } catch (error) {
-        console.log(error.message)
+        next(error)
     }
 }
 
-const verifyLogin = async (req, res) => {                                                   //to verify the login
+const verifyLogin = async (req, res,next) => {                                                   //to verify the login
     try {
         const email = req.body.email
         const password = req.body.password
@@ -177,19 +179,19 @@ const verifyLogin = async (req, res) => {                                       
         }
     }
     catch (error) {
-        console.log(error.message)
+        next(error)
     }
 }
 
-const loadGetOTP = async (req, res) => {                                                        //to load get OTP page
+const loadGetOTP = async (req, res,next) => {                                                        //to load get OTP page
     try {
         res.render('getOTP')
     } catch (error) {
-        console.log(error.message)
+        next(error)
     }
 }
 
-const getOTP = async (req, res) => {                                                            //to send OTP
+const getOTP = async (req, res,next) => {                                                            //to send OTP
     try {
         req.session.mobile = req.body.mobile
         const userData = await User.findOne({ mobile: req.body.mobile })
@@ -206,38 +208,38 @@ const getOTP = async (req, res) => {                                            
             res.render('getOTP', { errMessage: "not registered" })
         }
     } catch (error) {
-        console.log(error.message)
+        next(error)
     }
 }
 
 
-const loadVerifyOTP = async (req, res) => {                                                         //to load verify OTP page
+const loadVerifyOTP = async (req, res,next) => {                                                         //to load verify OTP page
     try {
         res.render('verifyOTP')
-        console.log('verify');
+       
     } catch (error) {
-        console.log(error.message)
+        next(error)
     }
 }
 
-const resendOTP = async (req, res) => {
+const resendOTP = async (req, res,next) => {
     try {
         client.verify.v2
             .services(verifySid)
             .verifications.create({ to: "+91" + req.session.mobile, channel: "sms" })
             .then((verification) => {
-                console.log(verification.status)
+               
                 res.redirect('/verifyOTP')
             })
     }
     catch (error) {
-        console.log(error.message);
+        next(error)
     }
 
 }
 
 
-const verifyOTP = async (req, res) => {                                                             //to verify the OTP entered
+const verifyOTP = async (req, res,next) => {                                                             //to verify the OTP entered
     try {
         if (req.session.register) {
 
@@ -245,7 +247,7 @@ const verifyOTP = async (req, res) => {                                         
                 .services(verifySid)
                 .verificationChecks.create({ to: "+91" + req.session.mobile, code: req.body.OTP })
                 .then((verification_check) => {
-                    console.log(verification_check.status)
+                 
                     if (verification_check.status === "approved") {
                         (async () => {
                             const user = new User({
@@ -279,16 +281,16 @@ const verifyOTP = async (req, res) => {                                         
                 .services(verifySid)
                 .verificationChecks.create({ to: "+91" + req.session.mobile, code: req.body.OTP })
                 .then((verification_check) => {
-                    console.log(verification_check.status)
+               
                     res.redirect('/home')
                 })
         }
     } catch (error) {
-        console.log(error.message)
+        next(error)
     }
 }
 
-const loadShop = async (req, res) => {                                                              //to load shop page
+const loadShop = async (req, res,next) => {                                                              //to load shop page
     try {
         // const categoryData = await Category.find({ is_disabled: false })
         const productData = await Product.find({ is_disabled: false })
@@ -311,21 +313,21 @@ const loadShop = async (req, res) => {                                          
             res.render('shop', { product: productData, category: categoryData, menQuantity, womenQuantity, unisexQuantity })
         }
     } catch (error) {
-        error.message
+        next(error)
     }
 }
 
-const logout = async (req, res) => {                                                        //to logout
+const logout = async (req, res,next) => {                                                        //to logout
     try {
         delete req.session.user_id
         res.redirect('/login')
     }
     catch (error) {
-        console.log(error.message)
+        next(error)
     }
 }
 
-const loadProduct = async (req, res) => {                                                //to load the product page
+const loadProduct = async (req, res,next) => {                                                //to load the product page
     try {
         if (req.session.user_id) {
             const id = req.session.user_id
@@ -347,39 +349,39 @@ const loadProduct = async (req, res) => {                                       
             const productData = await Product.findById({ _id: req.query.id }).populate('category')
 
             const relatedProducts = await Product.find({ category: productData.category._id, is_disabled: false, _id: { $ne: req.query.id } })
-            console.log(relatedProducts)
+           
             res.render('singleProduct', { product: productData, relatedProducts })
         }
     } catch (error) {
-        console.log(error.message);
+        next(error)
     }
 }
 
-const loadUserProfile = async (req, res) => {
+const loadUserProfile = async (req, res,next) => {
     try {
         id = req.session.user_id
         const userData = await User.findById({ _id: id })
         res.render('userProfile', { user: userData })
     } catch (error) {
-        console.log(error.message);
+        next(error)
     }
 }
 
-const loadEditUserProfile = async (req, res) => {
+const loadEditUserProfile = async (req, res,next) => {
     try {
         id = req.session.user_id
         const userData = await User.findById({ _id: id })
         res.render('editUserProfile', { user: userData })
     } catch (error) {
-        console.log(error.message);
+       
     }
 }
 
-const loadCart = async (req, res) => {                                                                          //to load the cart page
+const loadCart = async (req, res,next) => {                                                                          //to load the cart page
     try {
         const id = req.session.user_id
         const cartData = await Cart.findOne({ userId: id })
-        // console.log(cartData)
+       
         const userData = await User.findById({ _id: req.session.user_id })
         if (cartData) {
 
@@ -388,7 +390,7 @@ const loadCart = async (req, res) => {                                          
             const totalPrice = cartData.product.map((data) => data.total)
             if (productsId) {
                 const productsData = await Product.find({ _id: { $in: productsId } })
-                console.log(productsData)
+            
                 res.render('cart', { user: userData, cartData, productsData, cartQuantity, totalPrice })
             }
             else {
@@ -403,15 +405,15 @@ const loadCart = async (req, res) => {                                          
             if (cartData) {
                 res.render('cart', { user: userData })
             } else {
-                console.log(error.message)
+              
             }
         }
     } catch (error) {
-        console.log(error.message);
+        next(error)
     }
 }
 
-const editUserProfile = async (req, res) => {                                                           //to edit the user profile details
+const editUserProfile = async (req, res,next) => {                                                           //to edit the user profile details
     try {
         const name = req.body.name
         const email = req.body.email
@@ -432,11 +434,11 @@ const editUserProfile = async (req, res) => {                                   
             res.redirect('/userProfile')
         }
     } catch (error) {
-        console.log(error.message);
+        next(error)
     }
 }
 
-const addToCart = async (req, res) => {                                                             //to add a product to cartf
+const addToCart = async (req, res,next) => {                                                             //to add a product to cartf
     try {
 
         const productId = req.query.id
@@ -460,7 +462,7 @@ const addToCart = async (req, res) => {                                         
                 if (addProductId) {
                     res.redirect('/cart')
                 } else {
-                    console.log(error.message)
+                    
                 }
             }
         } else {
@@ -476,40 +478,40 @@ const addToCart = async (req, res) => {                                         
             if (cartData) {
                 res.redirect('/cart')
             } else {
-                console.log(error.message)
+                
             }
         }
 
     }
 
     catch (error) {
-        console.log(error.message);
+        next(error)
     }
 }
 
-const deleteCartItem = async (req, res) => {                                            //to delete an item from the cart
+const deleteCartItem = async (req, res,next) => {                                            //to delete an item from the cart
     try {
         const id = req.session.user_id
         const productId = req.query.id
         await Cart.updateOne({ userId: id }, { $pull: { product: { productId } } })
         res.redirect('/cart')
     } catch (error) {
-        console.error(error.message)
+        next(error)
     }
 }
 
-const loadAddAddress = async (req, res) => {                                              //to load the add address page
+const loadAddAddress = async (req, res,next) => {                                              //to load the add address page
     try {
         id = req.session.user_id
         const userData = await User.findById({ _id: id })
 
         res.render('addAddress', { user: userData })
     } catch (error) {
-        console.log(error.message)
+        next(error)
     }
 }
 
-const addAddress = async (req, res) => {                                                                  //to add an address
+const addAddress = async (req, res,next) => {                                                                  //to add an address
     try {
         id = req.session.user_id
         const userData = await User.findById({ _id: id })
@@ -534,8 +536,7 @@ const addAddress = async (req, res) => {                                        
             const id = req.session.user_id
             const userAddress = await User.findOne({ _id: id }, { address: 1 })
             const user = await User.findOne({ _id: id })
-            console.log(userAddress)
-            console.log(userAddress.address)
+        
 
 
             if (userAddress.address > 0) {
@@ -552,23 +553,23 @@ const addAddress = async (req, res) => {                                        
         }
 
     } catch (error) {
-        console.log(error.message)
+        next(error)
     }
 
 }
 
-const loadEditAddress = async (req, res) => {                                                                 //to load the edit address page
+const loadEditAddress = async (req, res,next) => {                                                                 //to load the edit address page
     try {
         const id = req.session.user_id
         const addressData = await User.findOne({ 'address._id': req.query.id }, { 'address.$': 1, _id: 0 })
      
         res.render('editAddress', { address: addressData.address })
     } catch (error) {
-        console.log(error.message);
+        next(error)
     }
 }
 
-const editAddress = async (req, res) => {                                                                     //to edit the address
+const editAddress = async (req, res,next) => {                                                                     //to edit the address
     try {
         const id = req.session.user_id
      const updatedAddress={  name: req.body.name,
@@ -585,7 +586,7 @@ const editAddress = async (req, res) => {                                       
      req.body.state.trim() === "" || req.body.address.trim() === "" || req.body.landmark.trim() === "" || req.body.pincode.trim() === "" || isNaN(req.body.mobile)
      || isNaN(req.body.pincode)) {
         const addressData = await User.findOne({ 'address._id': req.query.id }, { 'address.$': 1, _id: 0 })
-        console.log(addressData)
+        
         res.render('editAddress', { address: addressData.address ,errMessage:"Enter the fields correctly"})
      }else{
         const addressData = await User.updateOne({ _id: id, 'address._id': req.query.id }, {
@@ -593,26 +594,26 @@ const editAddress = async (req, res) => {                                       
                 'address.$': updatedAddress
             }
         })
-        console.log(addressData)
+      
         res.redirect('/userProfile')
     }
 } catch (error) {
-        console.log(error.message);
+    next(error)
     }
 }
 
-const deleteAddress = async (req, res) => {                                                                   //to delete an address
+const deleteAddress = async (req, res,next) => {                                                                   //to delete an address
     try {
         const id = req.session.user_id
         const address = await User.updateOne({ _id: id }, { $pull: { address: { _id: req.query.id } } })
-        console.log(address)
+      
         res.redirect('/userProfile')
     } catch (error) {
-        console.log(error.message);
+        next(error)
     }
 }
 
-const changeQuantity = async (req, res) => {                                                                //to change the quantity of products in the cart
+const changeQuantity = async (req, res,next) => {                                                                //to change the quantity of products in the cart
     try {
         const { userData, productId, quantity, id } = req.body;
 
@@ -639,11 +640,11 @@ const changeQuantity = async (req, res) => {                                    
         }
 
     } catch (error) {
-        console.log(error.message);
+        next(error)
     }
 }
 
-const loadCheckout = async (req, res) => {                                                                         //to load the checkout page
+const loadCheckout = async (req, res,next) => {                                                                         //to load the checkout page
     try {
         const userData = await User.findOne({ _id: req.session.user_id })
         const cartData = await Cart.findOne({ userId: userData._id })
@@ -653,25 +654,25 @@ const loadCheckout = async (req, res) => {                                      
         const product = cartData.product
         await Cart.updateOne({ userId: req.session.user_id }, { $unset: { coupon: "" } })
         let subtotal = 0
-        // const productData = await Cart.findOne({productId:req.})
+    
         for (let i = 0; i < product.length; i++) {
             subtotal = subtotal + product[i].total
         }
 
         res.render('checkout', { cartData: cartData.product, productsData, subtotal, cart: cartData, user: userData })
     } catch (error) {
-        console.log(error.message)
+        next(error)
     }
 }
 
-const orderSave = async (req, res) => {                                                         //to save the order details
+const orderSave = async (req, res,next) => {                                                         //to save the order details
     try {
-        console.log(req.body);
+     
         const id = req.session.user_id
         const cartData = await Cart.findOne({ userId: id })
-        // const userData = await User.findOne({ _id: id })
+       
         const addressId = req.body.address
-        // const userId = req.session.user_id
+    
         const cartProductId = cartData.product
 
         let total = 0;
@@ -730,35 +731,20 @@ const orderSave = async (req, res) => {                                         
             res.json({ success: true })
         }
 
-
-        // const addressid=orderDetailsSave.addresId
-        // const address = userData.address.id(addressid);
-        // const orderData=await Order.findOne({_id:orderDetailsSave.id}).populate("productData.productId")
-        // const productDatas=orderData.productData
-        // console.log("product Name : "+productDatas[0].productId.productName);
-
-        // if (orderDetailsSave) {
-        //     res.render('confirmation',{order:orderDetailsSave,user:userData,address,productDatas})
-        // }
-        // else {
-        //     res.redirect('/checkout')
-        // }
-
-
     } catch (error) {
-        console.error(error.message)
+        next(error)
     }
 }
 
-const loadConfirmation = async (req, res) => {                                                                //to load confirmation page
+const loadConfirmation = async (req, res,next) => {                                                                //to load confirmation page
     try {
         const orderId = req.session.order_id
         const orderData = await Order.findOne({ _id: orderId })
         const userId = req.session.user_id
         const userData = await User.findOne({ _id: userId })
-        console.log(userData)
+       
         const addressid = orderData.addresId
-        // const address = userData.address.find(address=>address._id==addressid)
+       
         const address = userData.address.id(addressid);
 
 
@@ -767,9 +753,7 @@ const loadConfirmation = async (req, res) => {                                  
         const productDatas = productOrderData.productData
 
 
-        console.log(userData)
-        console.log(address)
-        console.log(productDatas)
+       
         const cartData = await Cart.findOne({ userId: userId }).populate('product.productId')
 
         cartData.product.forEach((product) => {
@@ -783,13 +767,13 @@ const loadConfirmation = async (req, res) => {                                  
         res.render('confirmation', { order: orderData, user: userData, address, productDatas })
 
     } catch (error) {
-        console.log(error.message);
+        next(error)
     }
 }
 //to verify payment
-const verifyPayment = async (req, res) => {
+const verifyPayment = async (req, res,next) => {
     try {
-        console.log(req.body);
+        
         const { order, payment } = req.body;
         let hmac = crypto.createHmac('sha256', '6PGGSfPJqLX35QV2BDdH1Tzm')
         hmac.update(payment.razorpay_order_id + '|' + payment.razorpay_payment_id)
@@ -810,13 +794,13 @@ const verifyPayment = async (req, res) => {
             res.json({ success: false })
         }
     } catch (error) {
-        console.log(error.message)
+        next(error)
     }
 }
 
 
 //to load wishlist
-const loadWishlist = async (req, res) => {
+const loadWishlist = async (req, res,next) => {
     try {
         const userId = req.session.user_id
         const id = req.session.user_id
@@ -829,7 +813,7 @@ const loadWishlist = async (req, res) => {
                 userId: userId
 
             })
-            console.log(wishlist)
+         
             await wishlist.save()
             res.render('wishlist', { user: userData, productData: 0 })
         }
@@ -842,13 +826,13 @@ const loadWishlist = async (req, res) => {
             res.render('wishlist', { user: userData, productsData })
         }
     } catch (error) {
-        console.log(error.message)
+        next(error)
     }
 }
 
 //to add items to wishlist
 
-const addToWishlist = async (req, res) => {
+const addToWishlist = async (req, res,next) => {
     try {
         const userId = req.session.user_id
         const wishlistData = await Wishlist.findOne({ userId: userId })
@@ -863,15 +847,12 @@ const addToWishlist = async (req, res) => {
                 userId: userId
 
             })
-            console.log(wishlist)
+    
             await wishlist.save()
         }
         else {
-
-
-
             const wishlistId = wishlistData._id
-            console.log(wishlistId)
+          
             const wishlistProducts = wishlistData.product.map((data) => data.productId)
             const productExists = wishlistProducts.includes(productId)
             if (productExists) {
@@ -879,31 +860,29 @@ const addToWishlist = async (req, res) => {
                 res.redirect('/home')
             }
             else {
-                console.log("else")
-
-                await Wishlist.findByIdAndUpdate({ _id: wishlistId }, { $push: { product: { productId: productid } } })
+              await Wishlist.findByIdAndUpdate({ _id: wishlistId }, { $push: { product: { productId: productid } } })
                 res.redirect('/wishlist')
             }
         }
 
     } catch (error) {
-        console.log(error.message)
+        next(error)
     }
 }
 
 //to delete items from wishlist
-const deleteWishlistItem = async (req, res) => {
+const deleteWishlistItem = async (req, res,next) => {
     try {
         const id = req.query.id;
         await Wishlist.updateOne({ userId: req.session.user_id }, { $pull: { product: { productId: id } } })
         res.redirect('/wishlist')
     } catch (error) {
-        console.log(error.message)
+       
     }
 }
 
 //to apply coupon
-const applyCoupon = async (req, res) => {
+const applyCoupon = async (req, res,next) => {
     try {
 
         const { couponCode } = req.body;
@@ -916,7 +895,7 @@ const applyCoupon = async (req, res) => {
                 total += cartData[i].total
 
             }
-            console.log(total)
+           
             if (couponDetails) {
                 const userUsed = await Coupon.findOne({ $and: [{ usedUser: { $in: [req.session.user_id] } }, { code: couponCode }] })
                 const expiryDate = new Date(couponDetails.expiryDate);
@@ -945,17 +924,17 @@ const applyCoupon = async (req, res) => {
         }
     }
     catch (error) {
-        console.log(error.message)
+        next(error)
     }
 }
 
 //to load order details page
-const loadOrderDetails = async (req, res) => {
+const loadOrderDetails = async (req, res,next) => {
     try {
         const userData = await User.findById({ _id: req.session.user_id })
         const id = req.session.user_id
         const orderData = await Order.find({ userId: id })
-        console.log(orderData)
+      
         const orderDate = orderData.map(value => {
 
             return moment(orderData.date).format("MMMM Do YYYY, h:mm:ss a");
@@ -964,12 +943,12 @@ const loadOrderDetails = async (req, res) => {
 
         res.render('orderDetails', { order: orderData, orderDate, user: userData })
     } catch (error) {
-        console.log(error.message)
+        next(error)
     }
 }
 
 //to cancel an order
-const cancelOrder = async (req, res) => {
+const cancelOrder = async (req, res,next) => {
     try {
         orderId = req.query.id
         const orderData = await Order.findOne({ _id: req.query.id })
@@ -980,12 +959,12 @@ const cancelOrder = async (req, res) => {
 
         res.redirect('/orders')
     } catch (error) {
-        console.log(error.message)
+        next(error)
     }
 }
 
 //to move a wishlist item to cart
-const addToCartWishlistItem = async (req, res) => {
+const addToCartWishlistItem = async (req, res,next) => {
     try {
         const productId = req.query.id
         const product = await Product.findOne({ _id: req.query.id })
@@ -1008,7 +987,7 @@ const addToCartWishlistItem = async (req, res) => {
                     await Wishlist.updateOne({ userId: req.session.user_id }, { $pull: { product: { productId: productId } } })
                     res.redirect('/cart')
                 } else {
-                    console.log(error.message)
+                   
                 }
             }
         } else {
@@ -1026,7 +1005,7 @@ const addToCartWishlistItem = async (req, res) => {
                 res.redirect('/cart')
 
             } else {
-                console.log(error.message)
+                
             }
         }
 
@@ -1034,16 +1013,15 @@ const addToCartWishlistItem = async (req, res) => {
 
     }
     catch (error) {
-        console.log(error.message)
+        next(error)
     }
 }
 
 //to filter the products in shop page
-const filter = async (req, res) => {
+const filter = async (req, res,next) => {
     try {
         const filters = req.body
 
-        console.log(req.body)
         const condition = { is_disabled: false }
         var search = ""
         let sorted;
@@ -1069,19 +1047,16 @@ const filter = async (req, res) => {
                 sorted = { productName: 1 }
             }
         }
-        console.log(filters)
+      
         if (filters.lowerPrice && filters.upperPrice) {
             condition.price = { $gte: filters.lowerPrice, $lte: filters.upperPrice }
         }
-        console.log(condition)
+      
         const productData = await Product.find(condition).sort(sorted)
 
-
-
-        console.log("productData")
         res.json({ success: true, product: productData })
     } catch (error) {
-        console.log(error.message)
+        next(error)
     }
 }
 

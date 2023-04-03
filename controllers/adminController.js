@@ -12,7 +12,7 @@ const moment = require('moment')
 const excelJS = require('exceljs')
 
 
-const loadLogin = async (req, res) => {                           //to load login page
+const loadLogin = async (req, res, next) => {                           //to load login page
   try {
     if (req.session.admin_id) {
       res.redirect('/admin/home')
@@ -22,12 +22,12 @@ const loadLogin = async (req, res) => {                           //to load logi
     }
   }
   catch (error) {
-    console.log(error.message)
+    next(error)
   }
 }
 
 
-const verifyLogin = async (req, res) => {                             //to verify login
+const verifyLogin = async (req, res, next) => {                             //to verify login
   try {
 
     if (req.body.email.trim() === "") {
@@ -49,65 +49,65 @@ const verifyLogin = async (req, res) => {                             //to verif
           res.redirect('/admin/home')
         }
         else {
-          console.log("password error");
+       
           res.render('login', { errMessage: "Wrong Password" })
         }
       }
       else {
-        console.log("wrong email")
+     
         res.render('login', { errMessage: "Wrong Email" })
       }
     }
   }
   catch (error) {
-    console.log(error.message)
+    next(error)
   }
 }
 
 
-const loadHome = async (req, res) => {                                      //to load home page
+const loadHome = async (req, res, next) => {                                      //to load home page
   try {
     const productData = await Product.find({ is_disabled: false })
     const userData = await User.find({})
     const orderData = await Order.find({ status: { $ne: "Cancelled" } })
     const categoryData = await Category.find({})
     const payedOrder = await Order.find({ paymentStatus: "Payed" })
-    console.log(payedOrder)
+   
     let totalRevenue = 0;
     for (let i = 0; i < payedOrder.length; i++) {
       totalRevenue = totalRevenue + payedOrder[i].cartTotal
     }
-    console.log(totalRevenue)
+ 
     res.render('home', { order: orderData, user: userData, product: productData, category: categoryData, totalRevenue })
   }
   catch (error) {
-    console.log(error.message)
+    next(error)
   }
 }
 
 
-const loadUserManagement = async (req, res) => {                            //to load user management
+const loadUserManagement = async (req, res, next) => {                            //to load user management
   try {
     const userdata = await User.find({})
     res.render('userManagement', { users: userdata })
   }
   catch (error) {
-    console.log(error.message)
+   
   }
 }
 
-const loadCategoryManagement = async (req, res) => {                        //to load category management
+const loadCategoryManagement = async (req, res, next) => {                        //to load category management
   try {
     const categoryData = await Category.find({})
     res.render('categoryManagement', ({ categories: categoryData }))
   }
   catch (error) {
-    console.log(error.message)
+    next(error)
   }
 }
 
 
-const loadProductManagement = async (req, res) => {                           //to load product management
+const loadProductManagement = async (req, res, next) => {                           //to load product management
   try {
     const productData = await Product.find({}).populate('category')
 
@@ -115,34 +115,34 @@ const loadProductManagement = async (req, res) => {                           //
     res.render('productManagement', { product: productData })
   }
   catch (error) {
-    console.log(error.message)
+    next(error)
   }
 }
 
 
 
-const logout = async (req, res) => {                                            //to logout
+const logout = async (req, res, next) => {                                            //to logout
   try {
     delete req.session.admin_id
     res.redirect('/admin/login')
   }
   catch (error) {
-    console.log(error.message)
+    next(error)
   }
 }
 
-const loadAddProduct = async (req, res) => {                                        //to load add product
+const loadAddProduct = async (req, res, next) => {                                        //to load add product
   try {
     const categories = await Category.find({})
 
 
     res.render('addProductForm', { category: categories })
   } catch (error) {
-    console.log(error.message)
+    next(error)
   }
 }
 
-const addProduct = async (req, res) => {                                        //to add a product
+const addProduct = async (req, res, next) => {                                        //to add a product
   try {
     const productName = req.body.productName
     const price = req.body.price
@@ -176,27 +176,27 @@ const addProduct = async (req, res) => {                                        
       })
 
       const productData = await products.save()
-      console.log(productData)
+     
       if (productData) {
         res.redirect('/admin/products')
       }
       else {
-        console.log(error.message)
+       
       }
     }
   } catch (error) {
-    console.log(error.message)
+    next(error)
   }
 }
 
 
 
 
-const loadAddCategory = async (req, res) => {                               //to load add category
+const loadAddCategory = async (req, res, next) => {                               //to load add category
   try {
     res.render('addCategoryForm')
   } catch (error) {
-    console.log(error.message)
+    
   }
 }
 
@@ -204,7 +204,7 @@ const addCategory = async (req, res) => {                                     //
   try {
     const name = req.body.categoryName
     const categoryData = await Category.findOne({ categoryName: { $regex: '.*' + name + '.*', $options: 'i' } })
-    console.log(categoryData)
+    
     if (categoryData) {
       res.render('addCategoryForm', ({ errMessage: "Category already exists" }))
     }
@@ -222,20 +222,20 @@ const addCategory = async (req, res) => {                                     //
 
   }
   catch (error) {
-    console.log(error.message)
+    next(error)
   }
 }
 
-const loadEditCategory = async (req, res) => {                                          //to load edit category
+const loadEditCategory = async (req, res, next) => {                                          //to load edit category
   try {
     const categoryData = await Category.findById(req.query.id)
     res.render('editCategoryForm', { categories: categoryData.categoryName })
   } catch (error) {
-    console.log(error.message)
+    next(error)
   }
 }
 
-const editCategory = async (req, res) => {                                                //to edit a category
+const editCategory = async (req, res, next) => {                                                //to edit a category
 
   try {
     const name = req.body.categoryName
@@ -252,11 +252,11 @@ const editCategory = async (req, res) => {                                      
     }
   }
   catch (error) {
-    console.log(error.message)
+    next(error)
   }
 }
 
-const disableCategory = async (req, res) => {                                           //to disable a category
+const disableCategory = async (req, res, next) => {                                           //to disable a category
   try {
     await Category.findByIdAndUpdate({ _id: req.query.id }, { $set: { is_disabled: true } })
     const categoryData = await Category.findOne({ _id: req.query.id })
@@ -265,55 +265,53 @@ const disableCategory = async (req, res) => {                                   
     res.redirect('/admin/categories')
   }
   catch (error) {
-    console.log(error.message)
+    next(error)
   }
 }
 
-const enableCategory = async (req, res) => {                                           //to enable a category
+const enableCategory = async (req, res, next) => {                                           //to enable a category
   try {
     await Category.findByIdAndUpdate({ _id: req.query.id }, { $set: { is_disabled: false } })
     res.redirect('/admin/categories')
   }
   catch (error) {
-    console.log(error.message)
+    next(error)
   }
 }
 
-const disableProduct = async (req, res) => {                                                       //to disable a product
+const disableProduct = async (req, res, next) => {                                                       //to disable a product
   try {
 
     await Product.findByIdAndUpdate({ _id: req.query.id }, { $set: { is_disabled: true } })
     res.redirect('/admin/products')
   }
   catch (error) {
-    console.log(error.message)
+    next(error)
   }
 }
 
-const enableProduct = async (req, res) => {
+const enableProduct = async (req, res, next) => {
   try {
     await Product.findByIdAndUpdate({ _id: req.query.id }, { $set: { is_disabled: false } })
     res.redirect('/admin/products')
   } catch (error) {
-    console.log(error.message)
+    next(error)
   }
 }
 
-const loadEditProduct = async (req, res) => {                                         //to load edit product
+const loadEditProduct = async (req, res, next) => {                                         //to load edit product
   try {
     const productData = await Product.findById(req.query.id).populate('category')
     const categoryData = await Category.find({})
-    console.log(productData);
-    console.log(categoryData)
-    console.log("edit load" + req.query.id);
+   
     req.session.query = req.query.id
     res.render('editProductForm', { product: productData, category: categoryData })
   } catch (error) {
-    console.log(error.message)
+    next(error)
   }
 }
 
-const editProduct = async (req, res) => {                                             //to edit a product
+const editProduct = async (req, res, next) => {                                             //to edit a product
   try {
 
     const productName = req.body.productName
@@ -345,53 +343,53 @@ const editProduct = async (req, res) => {                                       
       res.redirect('/admin/products')
     }
   } catch (error) {
-    console.log(error.message);
+    next(error)
   }
 }
 
 
-const blockUser = async (req, res) => {                                                       //to block a user
+const blockUser = async (req, res, next) => {                                                       //to block a user
   try {
-    console.log("block");
+   
     const userData = await User.findById(req.query.id)
-    console.log(userData)
+   
     await User.findOneAndUpdate({ _id: req.query.id }, { $set: { status: false } })
     res.redirect('/admin/users')
   } catch (error) {
-    error.message
+    next(error)
   }
 }
 
 
-const unblockUser = async (req, res) => {                                                    //to unblock a user
+const unblockUser = async (req, res, next) => {                                                    //to unblock a user
   try {
-    console.log("unblock")
+
     const userData = await User.findById(req.query._id)
     await User.findOneAndUpdate({ _id: req.query.id }, { $set: { status: true } })
     res.redirect('/admin/users')
   } catch (error) {
-    error.message
+    next(error)
   }
 }
 
-const deleteImage = async (req, res) => {                                                    //to delete an image in edit product page
+const deleteImage = async (req, res, next) => {                                                    //to delete an image in edit product page
   try {
-    console.log("delete" + req.session.query);
+  
     const imageUpdate = await Product.updateOne({ image: req.query.id }, { $pull: { image: { $in: [req.query.id] } } })
-    console.log(imageUpdate);
+    
     res.redirect('/admin/editProduct/?id=' + req.session.query)
 
 
   } catch (error) {
-    console.log(error.message)
+    next(error)
   }
 }
 
 //to load order management page
-const loadOrderManagement = async (req, res) => {
+const loadOrderManagement = async (req, res, next) => {
   try {
     const orderData = await Order.find({})
-    console.log(orderData)
+   
     const options = { day: 'numeric', month: 'short', year: 'numeric', hour: 'numeric', minute: 'numeric' };
     const orderDate = orderData.map(value => {
 
@@ -400,12 +398,12 @@ const loadOrderManagement = async (req, res) => {
     })
     res.render('orderManagement', { order: orderData, orderDate })
   } catch (error) {
-    console.log(error.message)
+    next(error)
   }
 }
 
 //to load order details page
-const loadOrderDetails = async (req, res) => {
+const loadOrderDetails = async (req, res, next) => {
   try {
     orderId = req.query.id
     const orderData = await Order.findOne({ _id: orderId }).populate('productData.productId')
@@ -416,37 +414,37 @@ const loadOrderDetails = async (req, res) => {
 
 
     const addressData = await userData.address.find(item => item._id == addressId)
-    console.log(addressData)
+   
     const productData = orderData.productData
 
     res.render('orderDetails', { orderData, productData, userData, addressData })
   } catch (error) {
-    console.log(error.message)
+    next(error)
   }
 }
 
 //to load coupon management page
-const loadCouponManagement = async (req, res) => {
+const loadCouponManagement = async (req, res, next) => {
   try {
     const couponData = await Coupon.find({})
 
     res.render('couponManagement', { couponData })
   } catch (error) {
-    console.log(error.message)
+    next(error)
   }
 }
 
 //to load add coupon page
-const loadAddCoupon = async (req, res) => {
+const loadAddCoupon = async (req, res, next) => {
   try {
     res.render('addCouponForm')
   } catch (error) {
-    console.error(error.message)
+    next(error)
   }
 }
 
 //to add a coupon
-const addCoupon = async (req, res) => {
+const addCoupon = async (req, res, next) => {
   try {
     const code = req.body.couponCode
     const type = req.body.couponType
@@ -483,74 +481,75 @@ const addCoupon = async (req, res) => {
       }
     }
   } catch (error) {
-    console.log(error.message)
+    next(error)
   }
 }
 
 //to set the order status to order shipped
-const orderShipped = async (req, res) => {
+const orderShipped = async (req, res, next) => {
   try {
     const orderId = req.query.id
     await Order.findByIdAndUpdate({ _id: orderId }, { $set: { status: "shipped" } })
     res.redirect('/admin/orders')
   }
   catch (error) {
-    console.log(error.message)
+    next(error)
   }
 }
 
 //to set the order status to order out for delivery
-const orderOutForDelivery = async (req, res) => {
+const orderOutForDelivery = async (req, res, next) => {
   try {
     const orderId = req.query.id
     await Order.findByIdAndUpdate({ _id: orderId }, { $set: { status: "Out For Delivery" } })
     res.redirect('/admin/orders')
   }
   catch (error) {
-    console.log(error.message)
+    next(error)
   }
 }
 
 //to set the order status to order delivered
-const orderDelivered = async (req, res) => {
+const orderDelivered = async (req, res, next) => {
   try {
     const orderId = req.query.id
     await Order.findByIdAndUpdate({ _id: orderId }, { $set: { status: "Delivered" } })
     res.redirect('/admin/orders')
   }
   catch (error) {
-    console.log(error.message)
+    next(error)
   }
 }
 
 //to load banner management page
-const loadBannerManagement = async (req, res) => {
+const loadBannerManagement = async (req, res, next) => {
   try {
     const bannerData = await Banner.find({})
     res.render('bannerManagement', { banner: bannerData })
   } catch (error) {
-    console.error(error.message)
+    next(error)
   }
 }
 
 //to load add banner page
-const loadAddBanner = (req, res) => {
+const loadAddBanner = (req, res, next) => {
   try {
     res.render('addBannerForm')
   } catch (error) {
-    console.log(error.message)
+    next(error)
   }
 }
 
 //to add a banner
-const addBanner = async (req, res) => {
+const addBanner = async (req, res, next) => {
   try {
 
     const { heading, description } = req.body
 
-    if (heading.trim() === "") {
+    if (heading.trim() === "" || description.trim() === "") {
       res.render('addBannerForm', { errMessage: "Enter valid details" })
     }
+
     else {
       const bannerSave = new Banner({
         heading: heading,
@@ -558,26 +557,28 @@ const addBanner = async (req, res) => {
         description: description
       })
       bannerSave.save()
-      console.log(bannerSave)
+    
       res.redirect('/admin/banners')
     }
   } catch (error) {
-    console.log(error.message)
+    next(error)
   }
 }
 
 //to delete a banner
-const deleteBanner = async (req, res) => {
+const deleteBanner = async (req, res, next) => {
   try {
     const id = req.query.id
     await Banner.findByIdAndDelete({ _id: id })
     res.redirect('/admin/banners')
   }
-  catch (error) { }
+  catch (error) {
+    next(error)
+  }
 }
 
 //to edit a banner
-const editBanner = async (req, res) => {
+const editBanner = async (req, res, next) => {
   try {
     const heading = req.body.heading
     const description = req.body.description
@@ -608,34 +609,36 @@ const editBanner = async (req, res) => {
       }
     }
   }
-  catch (error) { }
+  catch (error) {
+    next(error)
+  }
 }
 
 //to load edit banner page
-const loadEditBanner = async (req, res) => {
+const loadEditBanner = async (req, res, next) => {
   try {
     const id = req.query.id
     const bannerData = await Banner.findById({ _id: id })
     res.render('editBannerForm', { banner: bannerData })
   } catch (error) {
-    console.log(error.message)
+    next(error)
   }
 }
 
 //to delete a banner image
-const deleteBannerImage = async (req, res) => {
+const deleteBannerImage = async (req, res, next) => {
   try {
-    console.log(req.query.bannerid)
+  
     await Banner.updateOne({ _id: req.query.bannerid }, { $pull: { image: { $in: [req.query.id] } } })
     res.redirect('/admin/editBanner?id=' + req.query.bannerid)
   }
   catch (error) {
-
+    next(error)
   }
 }
 
 //to load sales report
-const loadSalesReport = async (req, res) => {
+const loadSalesReport = async (req, res, next) => {
   try {
     const sales = await Order.find({ status: "Delivered" }).populate('userId').populate('productData.productId')
     let formattedDate = []
@@ -649,16 +652,16 @@ const loadSalesReport = async (req, res) => {
       return moment(value.date).format("MMMM Do YYYY, h:mm:ss a");
 
     })
-    console.log(formattedDate)
+  
     res.render('salesReport', { sales, salesDetails, formattedDate, salesDate })
 
   } catch (error) {
-    console.log(error.message)
+    next(error)
   }
 }
 
 //to search the sales to display in sales report
-const salesSearch = async (req, res) => {
+const salesSearch = async (req, res, next) => {
   try {
 
     const date = req.body
@@ -670,13 +673,13 @@ const salesSearch = async (req, res) => {
 
 
     const sales = await Order.find({ $and: [{ date: { $gte: dateFrom } }, { date: { $lte: dateTo } }, { status: "Delivered" }] }).populate('userId').populate('productData.productId')
-    console.log(sales)
+   
 
     res.json({ success: true, sales: sales })
 
 
   } catch (error) {
-    console.error(error.message)
+    next(error)
   }
 }
 
@@ -746,7 +749,7 @@ const graphDetails = async (req, res, next) => {
     const categoryList = [];
 
     // Print the array of six months
-console.log(sixMonthsAgo)
+    
     res.json({ orderSalesCount, lastSixMonths, totalUserCount, paymentTotal, categoryNames, categoryPerc, })
 
 
@@ -779,9 +782,8 @@ const salesPdf = async (req, res, next) => {
 
     const start = req.body.dateFrom;
     const end = req.body.dateTo;
-    console.log(req.body)
+   
     const orderData = await Order.find({ status: "Delivered", date: { $gte: start, $lte: end } }).sort({ date: 'desc' }).populate('userId').populate('productData.productId')
-    console.log(orderData)
 
 
     for (let i = 0; i < orderData.length; i++) {
@@ -827,12 +829,11 @@ const salesPdf = async (req, res, next) => {
 
 
 
-    console.log("excel-generated")
+    
   } catch (error) {
     next(error);
   }
 }
-
 
 
 
@@ -877,5 +878,6 @@ module.exports = {
   editBanner,
   salesSearch,
   graphDetails,
-  salesPdf
+  salesPdf,
+
 }

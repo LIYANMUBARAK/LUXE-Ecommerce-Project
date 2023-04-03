@@ -16,6 +16,7 @@ const auth = require("../middleware/adminAuth")
 
 const adminController = require("../controllers/adminController")
 
+const errorHandler = require("../middleware/adminErrorHandler")
 
 admin_route.use((req, res, next) => {
     res.set('cache-Control', 'no-store')
@@ -109,5 +110,9 @@ admin_route.post('/salesSearch', adminController.salesSearch)                   
 admin_route.get('/graphDetails', adminController.graphDetails)                               //to pass graph details to admin dashboard
 
 admin_route.post('/salesReport',adminController.salesPdf)
+
+
+
+admin_route.use(errorHandler.errorHandler)
 
 module.exports = admin_route
