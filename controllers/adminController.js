@@ -49,12 +49,12 @@ const verifyLogin = async (req, res, next) => {                             //to
           res.redirect('/admin/home')
         }
         else {
-       
+
           res.render('login', { errMessage: "Wrong Password" })
         }
       }
       else {
-     
+
         res.render('login', { errMessage: "Wrong Email" })
       }
     }
@@ -72,12 +72,12 @@ const loadHome = async (req, res, next) => {                                    
     const orderData = await Order.find({ status: { $ne: "Cancelled" } })
     const categoryData = await Category.find({})
     const payedOrder = await Order.find({ paymentStatus: "Payed" })
-   
+
     let totalRevenue = 0;
     for (let i = 0; i < payedOrder.length; i++) {
       totalRevenue = totalRevenue + payedOrder[i].cartTotal
     }
- 
+
     res.render('home', { order: orderData, user: userData, product: productData, category: categoryData, totalRevenue })
   }
   catch (error) {
@@ -92,7 +92,7 @@ const loadUserManagement = async (req, res, next) => {                          
     res.render('userManagement', { users: userdata })
   }
   catch (error) {
-   
+
   }
 }
 
@@ -176,12 +176,12 @@ const addProduct = async (req, res, next) => {                                  
       })
 
       const productData = await products.save()
-     
+
       if (productData) {
         res.redirect('/admin/products')
       }
       else {
-       
+
       }
     }
   } catch (error) {
@@ -196,7 +196,7 @@ const loadAddCategory = async (req, res, next) => {                             
   try {
     res.render('addCategoryForm')
   } catch (error) {
-    
+
   }
 }
 
@@ -204,7 +204,7 @@ const addCategory = async (req, res) => {                                     //
   try {
     const name = req.body.categoryName
     const categoryData = await Category.findOne({ categoryName: { $regex: '.*' + name + '.*', $options: 'i' } })
-    
+
     if (categoryData) {
       res.render('addCategoryForm', ({ errMessage: "Category already exists" }))
     }
@@ -303,7 +303,7 @@ const loadEditProduct = async (req, res, next) => {                             
   try {
     const productData = await Product.findById(req.query.id).populate('category')
     const categoryData = await Category.find({})
-   
+
     req.session.query = req.query.id
     res.render('editProductForm', { product: productData, category: categoryData })
   } catch (error) {
@@ -350,9 +350,9 @@ const editProduct = async (req, res, next) => {                                 
 
 const blockUser = async (req, res, next) => {                                                       //to block a user
   try {
-   
+
     const userData = await User.findById(req.query.id)
-   
+
     await User.findOneAndUpdate({ _id: req.query.id }, { $set: { status: false } })
     res.redirect('/admin/users')
   } catch (error) {
@@ -374,9 +374,9 @@ const unblockUser = async (req, res, next) => {                                 
 
 const deleteImage = async (req, res, next) => {                                                    //to delete an image in edit product page
   try {
-  
+
     const imageUpdate = await Product.updateOne({ image: req.query.id }, { $pull: { image: { $in: [req.query.id] } } })
-    
+
     res.redirect('/admin/editProduct/?id=' + req.session.query)
 
 
@@ -389,7 +389,7 @@ const deleteImage = async (req, res, next) => {                                 
 const loadOrderManagement = async (req, res, next) => {
   try {
     const orderData = await Order.find({})
-   
+
     const options = { day: 'numeric', month: 'short', year: 'numeric', hour: 'numeric', minute: 'numeric' };
     const orderDate = orderData.map(value => {
 
@@ -405,7 +405,7 @@ const loadOrderManagement = async (req, res, next) => {
 //to load order details page
 const loadOrderDetails = async (req, res, next) => {
   try {
-    orderId = req.query.id
+    const orderId = req.query.id
     const orderData = await Order.findOne({ _id: orderId }).populate('productData.productId')
 
     const userData = await User.findOne({ _id: orderData.userId })
@@ -414,8 +414,10 @@ const loadOrderDetails = async (req, res, next) => {
 
 
     const addressData = await userData.address.find(item => item._id == addressId)
-   
+
     const productData = orderData.productData
+
+
 
     res.render('orderDetails', { orderData, productData, userData, addressData })
   } catch (error) {
@@ -557,7 +559,7 @@ const addBanner = async (req, res, next) => {
         description: description
       })
       bannerSave.save()
-    
+
       res.redirect('/admin/banners')
     }
   } catch (error) {
@@ -628,7 +630,7 @@ const loadEditBanner = async (req, res, next) => {
 //to delete a banner image
 const deleteBannerImage = async (req, res, next) => {
   try {
-  
+
     await Banner.updateOne({ _id: req.query.bannerid }, { $pull: { image: { $in: [req.query.id] } } })
     res.redirect('/admin/editBanner?id=' + req.query.bannerid)
   }
@@ -652,7 +654,7 @@ const loadSalesReport = async (req, res, next) => {
       return moment(value.date).format("MMMM Do YYYY, h:mm:ss a");
 
     })
-  
+
     res.render('salesReport', { sales, salesDetails, formattedDate, salesDate })
 
   } catch (error) {
@@ -673,7 +675,7 @@ const salesSearch = async (req, res, next) => {
 
 
     const sales = await Order.find({ $and: [{ date: { $gte: dateFrom } }, { date: { $lte: dateTo } }, { status: "Delivered" }] }).populate('userId').populate('productData.productId')
-   
+
 
     res.json({ success: true, sales: sales })
 
@@ -749,7 +751,7 @@ const graphDetails = async (req, res, next) => {
     const categoryList = [];
 
     // Print the array of six months
-    
+
     res.json({ orderSalesCount, lastSixMonths, totalUserCount, paymentTotal, categoryNames, categoryPerc, })
 
 
@@ -760,7 +762,7 @@ const graphDetails = async (req, res, next) => {
 }
 
 
-
+//to download the sales report as Excel file.
 const salesPdf = async (req, res, next) => {
   try {
 
@@ -782,7 +784,7 @@ const salesPdf = async (req, res, next) => {
 
     const start = req.body.dateFrom;
     const end = req.body.dateTo;
-   
+
     const orderData = await Order.find({ status: "Delivered", date: { $gte: start, $lte: end } }).sort({ date: 'desc' }).populate('userId').populate('productData.productId')
 
 
@@ -829,7 +831,7 @@ const salesPdf = async (req, res, next) => {
 
 
 
-    
+
   } catch (error) {
     next(error);
   }
